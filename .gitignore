@@ -1,0 +1,20 @@
+# 环境变量（含密钥，禁止上传）
+.env
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# 向量库与缓存
+chroma_db/
+*.sqlite3
+.pytest_cache/
+
+# 系统
+.DS_Store
+pip_install.log
