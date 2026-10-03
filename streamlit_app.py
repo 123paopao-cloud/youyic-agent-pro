@@ -132,14 +132,6 @@ with st.sidebar:
     if not settings.llm_ready:
         st.warning("尚未配置模型 API Key，请在 .env / 云端 Secrets 填入 LLM_API_KEY")
     st.caption(f"本次会话已使用 {st.session_state.use_count} 次")
-    # 临时诊断（部署确认后移除）：仅显示配置状态，不显示密钥值
-    try:
-        _sk = list(st.secrets.keys())
-        st.caption(f"诊断·Secrets keys: {_sk}")
-    except Exception as _e:  # noqa: BLE001
-        st.caption(f"诊断·Secrets 读取异常: {type(_e).__name__}")
-    st.caption(f"诊断·env LLM_API_KEY 存在: {bool(os.getenv('LLM_API_KEY'))}")
-    st.caption(f"诊断·active_model: {settings.active_model}")
 
 # 快捷问题
 if not st.session_state.messages:
