@@ -16,6 +16,30 @@ DATA_DIR = os.path.join(ROOT_DIR, "app", "data")
 load_dotenv(os.path.join(ROOT_DIR, ".env"))
 
 
+def _inject_streamlit_secrets() -> None:
+    """Streamlit Community Cloud 兼容：把 st.secrets 注入环境变量。
+
+    云端部署时 .env 不会上传（被 .gitignore 排除），密钥通过 Streamlit 控制台
+    Secrets 配置。st.secrets 不会自动写入 os.environ，BaseSettings 读不到，
+    这里在 Settings 实例化前显式注入（setdefault 不覆盖已有真实环境变量）。
+    非 Streamlit 环境（本地脚本 / FastAPI）无 streamlit 模块时安全跳过。
+    """
+    try:
+        import streamlit as st  # 仅 Streamlit 环境存在
+    except Exception:
+        return
+    try:
+        for k in st.secrets:
+            v = st.secrets[k]
+            if isinstance(v, str) and v:
+                os.environ.setdefault(k, v)
+    except Exception:
+        pass
+
+
+_inject_streamlit_secrets()
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(extra="ignore", case_sensitive=False)
 
